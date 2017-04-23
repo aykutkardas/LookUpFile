@@ -1,0 +1,218 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>LUF | LookUpFile</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+
+    <script>
+        function start() {
+
+            var anchor = document.querySelectorAll("a");
+
+            for (var i = 0; i < anchor.length; i++) {
+
+                anchor[i].addEventListener("click", function(e) {
+
+                    var href = e.target.getAttribute("href");
+
+                    console.log(href);
+
+                    window.location = href;
+
+                });
+            }
+
+            console.log("Anchor event installed...");
+
+        }
+
+        var app = angular.module("lookUpFileApp", [])
+
+        .controller("lookUpFileCtrl", function($scope, $http) {
+
+            $scope.result = [];
+
+            $http({
+                method: 'GET',
+
+                url: '/search.txt'
+
+            }).then(function successCallback(response) {
+
+                var a = [];
+
+                eval(response.data);
+
+                $scope.result = a
+
+            });
+
+        });
+    </script>
+
+    <style>
+        body {
+            background: #37474F;
+            text-align: center;
+            font-family: Arial;
+        }
+        
+        input {
+            border: none;
+            outline: none;
+            padding: 8px;
+            width: 300px;
+            border-radius: 3px;
+            opacity: 0.5;
+            transition: 0.3s;
+            text-align: center;
+            font-size: 10pt;
+            box-shadow: 0px 0px 5px #1e2225;
+        }
+        
+        input:focus {
+            width: 300px;
+            padding: 10px 25px;
+            opacity: 0.9;
+            font-size: 11pt;
+            box-shadow: 0px 0px 25px #1e2225;
+        }
+        
+        .look {
+            width: 100%;
+            height: 200px;
+            //background: #313c42;
+            padding: 50px 0px;
+            position: absolute;
+            top: 200px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .result {
+            width: 100%;
+            height: 200px;
+            padding: 50px 0px;
+            position: absolute;
+            top: 500px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow-x: hidden;
+            overflow-y: hidden;
+            text-align: center !inherit;
+            color: white;
+        }
+        
+        .result-info {
+            width: 100%;
+            height: 200px;
+            padding: 50px 0px;
+            position: absolute;
+            top: 400px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center !inherit;
+            color: white;
+        }
+        
+        .result-info tr {
+            transition: 0.9s;
+        }
+        
+        .result:hover {
+            overflow-y: scroll;
+        }
+        
+        a {
+            color: #4d829a;
+            text-decoration: none;
+        }
+        
+        table {
+            margin: auto;
+            width: 80%;
+        }
+        
+        td {
+            background: #313C42;
+            padding: 10px 20px;
+            font-size: 9pt;
+            text-align: left;
+        }
+        
+        .path {
+            color: silver;
+            font-style: italic;
+            font-size: 8pt;
+        }
+        
+        b {
+            border: 1px solid white;
+            padding: 2px;
+        }
+    </style>
+
+</head>
+
+<body ng-app="lookUpFileApp" ng-controller="lookUpFileCtrl" onload="start();">
+
+    <div class="look">
+
+
+        <form action="" method="get">
+
+            <input type="text" name="key" ng-model="key" placeholder="Aranacak veriyi girin...">
+
+        </form>
+
+    </div>
+
+    <div class="result-info">
+
+        <table class="length">
+
+            <tr ng-show="result.length>0">
+
+                <td colspan="2">
+                    Toplam <b>{{result.length}}</b> nesne bulundu!
+                </td>
+
+            </tr>
+
+            <tr ng-hide="result.length>0">
+
+                <td colspan="2">
+                    Bir dosya/klasör adı ya da uzantı giriniz.
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div class="result">
+
+        <table>
+
+            <tr ng-repeat="x in result track by $index">
+
+                <td><a href="file://{{x.path}}" download>{{x.name}}</a></td>
+
+                <td class="path">file://{{x.path}}</td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+</body>
+
+</html>
